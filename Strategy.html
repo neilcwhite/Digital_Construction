@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Construction Strategy</title>
+  <style>
+    /* make everything box‑sized so padding doesn't blow out your widths */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;        /* <-- full viewport height */
+      overflow: hidden;     /* <-- prevents page scrolling */
+      font-family: sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    /* header area */
+    .header {
+      background-color: #233e99;
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-title {
+      font-size: 1.5em;
+      margin: 0;
+    }
+
+    .wheel-button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .wheel-button:hover {
+      background-color: #0056b3;
+    }
+
+    /* container takes all remaining vertical space */
+    .container {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      height: calc(100vh - 15px*2 - 20px*2); /* header padding (top+bottom) + container padding (top+bottom) */
+      overflow-y: auto;                      /* if content still slightly overflows, scroll here, not page */
+    }
+
+    /* each column flexes equally */
+    .column {
+      flex: 1;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px;
+      overflow-y: auto; /* let column scroll if its content is taller than its allotted height */
+    }
+
+    /* your color schemes */
+    .essentials {
+      background-color: #6a994e;
+      border: 1px solid #c3e6cb;
+      color: #fff;
+    }
+    .smart {
+      background-color: #f28f3b;
+      border: 1px solid #ffdf7e;
+      color: #fff;
+    }
+    .advanced {
+      background-color: #8367c7;
+      border: 1px solid #d1bee7;
+      color: #fff;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    ul {
+      padding-left: 20px;
+      margin-bottom: 0;
+    }
+    li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 class="header-title">Digital Construction Strategy</h1>
+    <a href="DigitalWheel.html" class="wheel-button">The Wheel</a>
+  </div>
+
+  <div class="container">
+    <div class="column essentials">
+      <h2>Essentials</h2>
+      <p>The Essentials Digital Construction Strategy focuses on core tools and processes to streamline project delivery, ensuring collaboration and reducing risks without unnecessary complexity.</p>
+      <p><strong>Key benefits include:</strong></p>
+      <ul>
+        <li><strong>Clear Communication:</strong> Use 3D models for site briefings and visual presentations, ensuring teams understand tasks and design intent.</li>
+        <li><strong>Basic Site Efficiency:</strong> Digital forms and snagging processes linked to the model simplify on-site tasks and improve issue tracking.</li>
+        <li><strong>Design Coordination:</strong> Shared, clash-free models align all disciplines, reducing errors and costly rework.</li>
+        <li><strong>Integrated Visualisation:</strong> Tools like augmented reality provide real-time comparisons of design versus construction, enhancing quality control.</li>
+      </ul>
+      <p>
+        <a href="DigitalWheel.html?tab=essential" class="show-more-button">
+          Show me more →
+        </a>
+      </p>
+    </div>
+
+    <div class="column smart">
+      <h2>Smart</h2>
+      <p>The Smart Digital Construction Strategy is designed to enhance project delivery by integrating advanced digital tools that reduce risks, improve efficiency, and streamline processes.</p>
+      <p><strong>Key benefits include:</strong></p>
+      <ul>
+        <li><strong>Survey Accuracy:</strong> Detailed 3D models of existing conditions and precise site surveys ensure early identification of risks, reducing costly design errors.</li>
+        <li><strong>Design Precision:</strong> Enhanced design reviews and interdisciplinary checks ensure all disciplines are fully aligned, minimising clashes and rework.</li>
+        <li><strong>Data Management:</strong> Consistent naming and embedded quantities improve traceability, ensuring accurate cost tracking and resource allocation.</li>
+      </ul>
+      <p>
+        <a href="DigitalWheel.html?tab=smart" class="show-more-button">
+          Show me more →
+        </a>
+      </p>
+    </div>
+
+    <div class="column advanced">
+      <h2>Advanced</h2>
+      <p>The Advanced Digital Construction Strategy takes digital construction to the next level, integrating advanced tools to reduce risks, boost efficiency, and streamline project delivery.</p>
+      <p><strong>Key benefits include:</strong></p>
+      <ul>
+        <li><strong>Accurate Planning:</strong> Advanced simulations and progress tracking ensure construction sequences are optimised, reducing delays and on-site disruptions.</li>
+        <li><strong>Quality Assurance:</strong> Automated inspection plans and seamless handover documents improve accountability and ensure all project standards are met.</li>
+        <li><strong>Cost and Resource Efficiency:</strong> Integrated costing tools and tender coding enable precise budget control and smarter resource allocation.</li>
+        <li><strong>Sustainability Focus:</strong> Carbon footprint, lighting, and thermal performance analysis help meet environmental goals and reduce operational costs.</li>
+        <li><strong>Comprehensive Insights:</strong> Structural and energy simulations provide a complete understanding of project performance, improving decision-making.</li>
+      </ul>
+      <p>
+        <a href="DigitalWheel.html?tab=advanced" class="show-more-button">
+          Show me more →
+        </a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

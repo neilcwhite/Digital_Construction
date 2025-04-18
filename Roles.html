@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Construction Strategy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* make everything box‑sized so padding doesn't blow out your widths */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;      /* <-- full viewport height */
+      overflow: hidden;    /* <-- prevents page scrolling */
+      font-family: sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    /* header area */
+    .header {
+      background-color: #233e99;
+      color: #fff;
+      padding: 0 20px; /* Adjusted padding */
+      height: 60px; /* Fixed height for easier calculation */
+      display: flex;
+      justify-content: space-between; /* Space between title and icons */
+      align-items: center;
+    }
+
+    .header-title {
+      font-size: 1.5em;
+      margin: 0;
+    }
+
+    /* Container for header icons */
+    .header-icons {
+        display: flex;
+        align-items: center;
+        gap: 25px; /* Space between icons */
+    }
+
+    /* Styling for the icon links */
+    .header-icon-link {
+        color: #fff; /* Icon colour */
+        font-size: 1.6em; /* Icon size */
+        text-decoration: none; /* Remove underline */
+        transition: color 0.2s ease-in-out; /* Smooth hover effect */
+    }
+
+    .header-icon-link:hover {
+        color: #ccc; /* Lighter colour on hover */
+    }
+
+    /* Removed old .wheel-button styles as they are replaced by icons */
+
+    /* container takes all remaining vertical space */
+    .container {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      /* Calculate height: Full viewport minus header height minus container padding (top+bottom) */
+      height: calc(100vh - 60px - (10px * 2));
+      overflow-y: auto; /* if content slightly overflows, scroll here, not page */
+    }
+
+    /* each column flexes equally */
+    .column {
+      flex: 1;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 15px; /* Slightly increased padding */
+      overflow-y: auto; /* let column scroll if its content is taller */
+      max-height: 100%; /* Ensure column doesn't overflow container */
+    }
+
+    /* your color schemes */
+    .DCM {
+      background-color: #C0C0C0;
+      border: 1px solid #000000;
+      color: #000000;
+    }
+    .DDC {
+      background-color: #C0C0C0;
+      border: 1px solid #000000;
+      color: #000000;
+    }
+    .DSC {
+      background-color: #C0C0C0;
+      border: 1px solid #000000;
+      color: #000000;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 15px; /* Increased spacing */
+    }
+    p {
+        line-height: 1.5; /* Improved readability */
+        margin-bottom: 10px;
+    }
+    ul {
+      padding-left: 10px; /* Standard list indentation */
+      margin-bottom: 0;
+      margin-top: 5px; /* Space above list */
+    }
+    li {
+      margin-bottom: 6px; /* Increased spacing */
+      line-height: 1.2;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 class="header-title">Digital Construction Roles</h1>
+    <div class="header-icons">
+      <a href="Strategy.html" class="header-icon-link" title="Home" aria-label="Home">
+        <i class="fa-solid fa-house"></i> </a>
+      <a href="DigitalWheel.html" class="header-icon-link" title="Digital Wheel" aria-label="Digital Wheel">
+        <i class="fa-solid fa-circle"></i> </a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="column DCM">
+      <h2>Digital Construction Manager</h2>
+      <p>The Digital Construction Manager oversees digital processes in construction projects, focusing on efficient delivery through tools such as three-dimensional digital twins and common data environments (CDEs). The role enhances collaboration, reduces risks, and optimises outcomes in cost, time, and quality.</p>
+      <p><strong>Key Responsibilities:</strong></p>
+      <ul>
+        <li><strong>Model Management:</strong> Use 3D models for site briefings and visual presentations, ensuring teams understand tasks and design intent.</li>
+        <li><strong>Digital Integration:</strong> Digital forms and snagging processes linked to the model simplify on-site tasks and improve issue tracking.</li>
+        <li><strong>Project Information Alignment:</strong> Shared, clash-free models align all disciplines, reducing errors and costly rework.</li>
+        <li><strong>Risk Mitigation:</strong> Tools like augmented reality provide real-time comparisons of design versus construction, enhancing quality control.</li>
+        <li><strong>Decision Support:</strong> Providing accurate data for informed decision-making.</li>
+        <li><strong>Collaboration:</strong> Facilitating communication across multidisciplinary teams.</li>
+        <li><strong>Process Innovation:</strong> Promoting efficient, innovative digital approaches.</li>
+        <li><strong>Training:</strong> Supporting teams in using digital tools and workflows effectively.</li>
+      </ul>
+    </div>
+
+    <div class="column DDC">
+      <h2>Digital Design Team Coordinator</h2>
+      <p>The Design Team Coordinator focuses on managing and coordinating digital processes for specific tasks within the design phase of construction projects. This role ensures the accurate development of digital models and supports seamless collaboration within their assigned area to contribute to overall project success.</p>
+      <p><strong>Key Responsibilities:</strong></p>
+      <ul>
+        <li><strong>Task-Specific Model Coordination:</strong> Managing the development and accuracy of digital models for specific tasks.</li>
+        <li><strong>Focused Collaboration:</strong> Coordinating with other team members and disciplines to ensure task alignment.</li>
+        <li><strong>Standards Compliance:</strong> Ensuring workflows meet project information requirements for the assigned task.</li>
+        <li><strong>Data Handling:</strong> Maintaining and organising task-related data in common data environments (CDEs).</li>
+        <li><strong>Clash Detection:</strong> Identifying and resolving potential design conflicts within the assigned scope.</li>
+        <li><strong>Tool Utilisation:</strong> Supporting the effective use of digital tools for task-specific design accuracy.</li>
+        <li><strong>Guidance:</strong> Providing task-level support and guidance on digital workflows to team members.</li>
+      </ul>
+    </div>
+
+    <div class="column DSC">
+      <h2>Digital Site Coordinator</h2>
+      <p>The Digital Site Coordinator manages the use of digital tools and models during site activities, ensuring they support construction processes and accurately incorporate site and as-built information. This role ensures models remain updated and aligned with real-world conditions.</p>
+      <p><strong>Key Responsibilities:</strong></p>
+      <ul>
+        <li><strong>Model Integration:</strong> Managing digital models to support site activities and construction workflows.</li>
+        <li><strong>As-Built Updates:</strong> Ensuring site and as-built information is accurately added to the model.</li>
+        <li><strong>Collaboration:</strong> Bridging site and design teams to maintain alignment and communication.</li>
+        <li><strong>Data Accuracy:</strong> Verifying models reflect site conditions and changes during construction.</li>
+        <li><strong>Clash Management:</strong> Identifying and resolving issues arising on-site.</li>
+        <li><strong>Tool Optimisation:</strong> Supporting the effective use of digital tools on-site.</li>
+        <li><strong>Documentation:</strong> Ensuring as-built documentation aligns with the final model.</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

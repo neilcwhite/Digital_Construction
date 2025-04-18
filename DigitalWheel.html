@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Construction Wheel - Compact Layout</title>
+    <style>
+        /* Base Resets and Body */
+        body, h1, h2, h3, h4, p, ul, li {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: sans-serif;
+            line-height: 1.3;
+            font-weight: bold;
+            color: #333;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-size: 14px;
+        }
+        header {
+  /* match page 1 exactly: */
+  background-color: #233e99;
+  color: #fff;
+
+  /* same vertical + horizontal padding */
+  padding: 20px 20px;
+
+  /* exact text size from page 1 (1.5 ×16px) */
+  font-size: 24px;
+
+  /* force the line‑height so the text block is the right height */
+  line-height: 1;
+
+  /* identical rounded corners */
+  border-radius: 0px;
+
+  /* center any inline text vertically */
+  display: flex;
+  align-items: center;
+
+  /* same gap below header */
+  margin-bottom: 20px;
+
+  /* don’t let flex shrink it if its parent is a flex container */
+  flex-shrink: 0;
+}
+
+/* if you have an <h1> inside, remove its default margins: */
+header h1 {
+  margin: 0;
+}
+
+
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            padding: 1rem;
+            gap: 1rem;
+            overflow: hidden;
+        }
+        .left-column {
+            flex: 0 0 50%;
+            max-width: 50%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: center; /* Center SVG horizontally */
+            position: relative;
+        }
+        .right-column {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 2rem - 3rem); /* Adjust as needed */
+        }
+
+        /* Preset Buttons Container */
+        .presets {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem; /* Space BETWEEN groups */
+            z-index: 1;
+            align-items: flex-end; /* Align groups to the right */
+            width: auto; /* Allow container to size based on content */
+        }
+
+        /* Container for each pair of buttons */
+        .preset-group {
+            display: flex;
+            flex-direction: column; /* Stack base and plus button vertically */
+            align-items: flex-end; /* Align buttons to the right */
+            width: 100%; /* Take full width of presets container */
+        }
+
+        /* Base Preset Button Styling */
+        .preset-button {
+             padding: 0.4rem 0.8rem;
+             color: #ffffff;
+             font-weight: bold;
+             border-radius: 4px;
+             text-align: center;
+             min-width: 100px;
+             width: 120px; /* Give buttons a fixed width for alignment */
+             font-size: 0.8rem;
+             border: none;
+             cursor: pointer;
+             transition: background-color 0.2s ease;
+        }
+         /* Specific base button colours */
+        .preset-essential { background-color: #6a994e; }
+        .preset-smart     { background-color: #f28f3b; }
+        .preset-advanced  { background-color: #8367c7; }
+
+
+        /* Initial state of the plus buttons - HIDDEN IN FLOW */
+        .preset-essentialplus,
+        .preset-smartplus,
+        .preset-advancedplus {
+          /* Appearance Styling */
+          padding: 0rem 0.8rem; /* No vertical padding initially */
+          margin: 0; /* No margin initially */
+          color: #ffffff;
+          font-weight: bold;
+          border-radius: 4px;
+          text-align: center;
+          width: 120px; /* Match base button width */
+          font-size: 0.8rem;
+          border: none;
+          cursor: pointer;
+
+          /* Hiding & Transition */
+          max-height: 0; /* Collapse height */
+          opacity: 0;
+          overflow: hidden;
+          pointer-events: none;
+
+          /* Transition for the slide-down/appear effect */
+          transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease-out, margin-top 0.3s ease-out;
+        }
+        /* Specific plus button colours */
+        .preset-essentialplus { background-color: #007A37; }
+        .preset-smartplus     { background-color: #c55e00; }
+        .preset-advancedplus  { background-color: #4C216D; }
+
+
+        /* Expanded state - show plus button IN FLOW */
+        .presets.expanded-essential .preset-group .preset-essentialplus,
+        .presets.expanded-smart .preset-group .preset-smartplus,
+        .presets.expanded-advanced .preset-group .preset-advancedplus {
+             max-height: 50px; /* Allow height to expand (adjust if needed) */
+             opacity: 1;
+             padding: 0.4rem 0.8rem; /* Restore vertical padding */
+             margin-top: 0.4rem; /* Add space above the plus button */
+             pointer-events: auto;
+        }
+
+        /* SVG Container and SVG Styling */
+        .svg-container {
+            background-color: #ffffff;
+            padding: 5px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            flex-grow: 1;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        .svg-container svg {
+            max-width: 100%;
+            max-height: 100%;
+            height: auto;
+            display: block;
+        }
+        .segment {
+            fill: #d3d3d3;
+            stroke: #ffffff;
+            stroke-width: 1;
+            transition: fill 0.2s ease, fill-opacity 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease;
+            cursor: pointer;
+            fill-opacity: 1;
+        }
+        /* Segment Highlighting States */
+        .segment.highlight-primary {
+             fill: #233e99; /* hoverFillSelf */
+             fill-opacity: 1;
+             stroke: #ffffff; /* defaultStroke */
+             stroke-width: 1;
+        }
+        .segment.highlight-secondary {
+            fill: rgba(35, 62, 153, 0.4); /* hoverFillOthers */
+            fill-opacity: 1;
+            stroke: #ffffff; /* defaultStroke */
+            stroke-width: 1;
+        }
+        .segment.highlight-locked {
+            fill: #233e99; /* hoverFillSelf */
+            fill-opacity: 1;
+            stroke: #cc0000; /* lockedStroke */
+            stroke-width: 1;
+        }
+        .segment.highlight-locked-secondary {
+            fill: rgba(35, 62, 153, 0.4); /* hoverFillOthers */
+            fill-opacity: 1;
+            stroke: #ffffff; /* defaultStroke */
+            stroke-width: 1;
+        }
+        /* Preset Highlighting */
+        .segment.highlight-preset-base {
+             /* Example: Essential Base Color */
+             fill: #6a994e;
+             fill-opacity: 1;
+             stroke: #ffffff;
+             stroke-width: 1;
+        }
+         .segment.highlight-preset-plus {
+             /* Example: Essential Plus Color */
+             fill: #007A37;
+             fill-opacity: 1;
+             stroke: #ffffff;
+             stroke-width: 1;
+        }
+         /* Add specific preset colors here */
+         .segment.preset-essential-base { fill: #6a994e; }
+         .segment.preset-essential-plus { fill: #007A37; }
+         .segment.preset-smart-base { fill: #f28f3b; }
+         .segment.preset-smart-plus { fill: #c55e00; }
+         .segment.preset-advanced-base { fill: #8367c7; }
+         .segment.preset-advanced-plus { fill: #4C216D; }
+
+        .outer-chord, #center_circle {
+            fill: #233e99;
+            stroke: #ffffff;
+            stroke-width: 1;
+        }
+        /* SVG Text Styling */
+        #label_outer_chord_1, #label_outer_chord_2, #label_outer_chord_3,
+        #label_outer_chord_4, #label_outer_chord_5, #label_outer_chord_6,
+        #label_outer_chord_7, #label_outer_chord_8, #center_label,
+        text[id^="label_inner_segment"] {
+            fill: #ffffff;
+            font-family: Arial, sans-serif;
+            pointer-events: none;
+            user-select: none;
+        }
+        #label_outer_chord_1, #label_outer_chord_2, #label_outer_chord_3,
+        #label_outer_chord_4, #label_outer_chord_5, #label_outer_chord_6,
+        #label_outer_chord_7, #label_outer_chord_8 {
+            font-size: 17px;
+            font-weight: bold;
+        }
+        #center_label { font-size: 12px; font-weight: bold; }
+        text[id^="label_inner_segment"] { font-size: 10px; font-weight: normal; }
+
+        /* Right Column Content Styling */
+        #details-title {
+            color: #002d62; border-bottom: 1px solid #005a9c; padding-bottom: 0.3rem; margin-bottom: 0.4rem; font-size: 1.2rem; font-weight: bold; flex-shrink: 0;
+        }
+        #details-description {
+            margin-bottom: 0.8rem; font-size: 0.85rem; color: #444; line-height: 1.35; flex-shrink: 0;
+        }
+        .details-row {
+            display: flex; gap: 1.5rem; width: 100%; flex-shrink: 0; margin-bottom: 0.8rem;
+        }
+        .details-section-half { flex: 1; min-width: 0; }
+        .details-section h4 {
+            color: #333; margin-bottom: 0.3rem; font-size: 0.75rem; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; border-bottom: 1px solid #e8e8e8; padding-bottom: 0.2rem;
+        }
+        .details-section ul { list-style: none; padding-left: 0; }
+        .details-section li { display: flex; align-items: center; gap: 0.4rem; padding: 0.1rem 0; font-size: 0.85rem; min-height: 18px; }
+        .checkbox { display: inline-block; width: 13px; height: 13px; border: 1px solid #555; border-radius: 2px; position: relative; flex-shrink: 0; background-color: #fff; margin-top: 1px; text-align: center; line-height: 11px; }
+        .checkbox.checked::after { content: '\2714'; color: #cc0000; font-size: 11px; font-weight: bold; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; }
+        .checkbox.unchecked::after { content: ''; }
+        .icon-info, .icon-download { display: inline-flex; align-items: center; justify-content: center; color: #005a9c; font-size: 0.9rem; flex-shrink: 0; width: 15px; height: 15px; border-radius: 50%; text-align: center; }
+        .icon-info { background-color: #e0eaf3; font-style: italic; font-weight: bold; cursor: default; }
+        .icon-download { font-size: 1rem; cursor: default; }
+        .icons-container { margin-left: auto; display: inline-flex; align-items: center; gap: 0.3rem; min-width: 15px; justify-content: flex-end; }
+        .icon-link { text-decoration: none; color: inherit; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+        .icon-link:hover .icon-info, .icon-link:hover .icon-download { color: #002d62; background-color: #d0ddeB; }
+        .list-item-text { flex-grow: 1; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 0.4rem; }
+
+        /* Preset Details Styling */
+        #preset-details h2 { color: #002d62; border-bottom: 1px solid #005a9c; padding-bottom: 0.3rem; margin-bottom: 0.4rem; font-size: 1.2rem; font-weight: bold; }
+        #preset-details p { margin-bottom: 0.8rem; font-size: 0.85rem; color: #444; line-height: 1.35; }
+        #preset-benefits { list-style: none; padding-left: 0; margin-bottom: 1rem; }
+        #preset-benefits li { font-size: 0.85rem; margin-bottom: 0.4rem; line-height: 1.3; }
+        #preset-benefits li strong { color: #002d62; display: block; margin-bottom: 0.1rem; }
+        #preset-downloads { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; margin-top: 1rem; }
+        #preset-downloads .icon-link { color: #005a9c; font-size: 0.9rem; font-weight: normal; gap: 0.4rem; }
+        #preset-downloads .icon-link .icon-download { font-size: 1rem; color: #005a9c; }
+        #preset-downloads .icon-link:hover { color: #002d62; text-decoration: underline; }
+        #preset-downloads .icon-link:hover .icon-download { color: #002d62; }
+
+.home-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  text-decoration: none;
+}
+.home-link svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 1) FIX the description area to one height, and allow scroll if it overflows */
+#details-description {
+  height: 9rem;              /* adjust this until it fits your longest blurb */
+  overflow-y: auto;          /* lets long text scroll inside the box */
+  margin: 0 0 1rem;          /* move the first details row down a bit */
+  border-bottom: 1px solid #e8e8e8;
+  padding-bottom: 0.5rem;
+}
+
+/* 2) a horizontal line between your two rows of check‑lists */
+.details-row + .details-row {
+  border-top: 1px solid #e8e8e8;
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+/* 3) a subtle vertical line between left/right halves */
+.details-section-half + .details-section-half {
+  border-left: 1px solid #e8e8e8;
+  padding-left: 1rem;
+}
+
+.legends {
+  display: flex;
+  justify-content: center; /* center both items */
+  align-items: center;
+  padding: 1rem 1.5rem;
+  gap: 0.4rem;             /* same consistent gap */
+}
+
+
+.legend-item {
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* your two colours */
+.legend-feature  { background-color: #233e99; }
+.legend-required { background-color: #b0b8df; }
+
+
+
+</style>
+</head>
+<body>
+    <header>The Spencer Digital Construction Wheel</header>
+    <div class="container">
+        <div class="left-column">
+            <a href="strategy.html" class="home-link" title="Home">
+                <!-- simple SVG house icon -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#233e99" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+              </a>
+            <div class="presets">
+                <div class="preset-group">
+                    <button class="preset-button preset-essential">Essential</button>
+                    <button class="preset-button preset-essentialplus">Essentials +</button>
+                </div>
+                <div class="preset-group">
+                    <button class="preset-button preset-smart">Smart</button>
+                    <button class="preset-button preset-smartplus">Smart +</button>
+                </div>
+                <div class="preset-group">
+                    <button class="preset-button preset-advanced">Advanced</button>
+                    <button class="preset-button preset-advancedplus">Advanced +</button>
+                </div>
+            </div>
+            <div class="legends">
+                <div class="legend-item legend-feature">Feature</div>
+                <div class="legend-item legend-required">Required</div>
+              </div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="600" style="background:#fff;" viewBox="-300 -300 600 600" width="600">
+                    <path class="segment segment-1" d="M 0.000,-265.000 A 265,265 0 0 1 55.097,-259.209 L 10.396,-48.907 A 50,50 0 0 0 0.000,-50.000 Z" data-label="Existing Model Creation" id="segment_01" />
+                    <path class="segment segment-2" d="M 55.097,-259.209 A 265,265 0 0 1 107.785,-242.090 L 20.337,-45.677 A 50,50 0 0 0 10.396,-48.907 Z" data-label="Delap Survey" id="segment_02" />
+                    <path class="segment segment-3" d="M 107.785,-242.090 A 265,265 0 0 1 155.763,-214.390 L 29.389,-40.451 A 50,50 0 0 0 20.337,-45.677 Z" data-label="Discipline Drawings" id="segment_03" />
+                    <path class="segment segment-4" d="M 155.763,-214.390 A 265,265 0 0 1 196.933,-177.320 L 37.157,-33.457 A 50,50 0 0 0 29.389,-40.451 Z" data-label="Digital Collaboration" id="segment_04" />
+                    <path class="segment segment-5" d="M 196.933,-177.320 A 265,265 0 0 1 229.497,-132.500 L 43.301,-25.000 A 50,50 0 0 0 37.157,-33.457 Z" data-label="Model Based Drawings" id="segment_05" />
+                    <path class="segment segment-6" d="M 229.497,-132.500 A 265,265 0 0 1 252.030,-81.890 L 47.553,-15.451 A 50,50 0 0 0 43.301,-25.000 Z" data-label="Design Review" id="segment_06" />
+                    <path class="segment segment-7" d="M 252.030,-81.890 A 265,265 0 0 1 263.548,-27.700 L 49.726,-5.226 A 50,50 0 0 0 47.553,-15.451 Z" data-label="Clash Detection" id="segment_07" />
+                    <path class="segment segment-8" d="M 263.548,-27.700 A 265,265 0 0 1 263.548,27.700 L 49.726,5.226 A 50,50 0 0 0 49.726,-5.226 Z" data-label="IDC Review" id="segment_08" />
+                    <path class="segment segment-9" d="M 263.548,27.700 A 265,265 0 0 1 252.030,81.890 L 47.553,15.451 A 50,50 0 0 0 49.726,5.226 Z" data-label="Quality Assurance" id="segment_09" />
+                    <path class="segment segment-10" d="M 252.030,81.890 A 265,265 0 0 1 229.497,132.500 L 43.301,25.000 A 50,50 0 0 0 47.553,15.451 Z" data-label="Marketing" id="segment_10" />
+                    <path class="segment segment-11" d="M 229.497,132.500 A 265,265 0 0 1 196.933,177.320 L 37.157,33.457 A 50,50 0 0 0 43.301,25.000 Z" data-label="Tender Submission" id="segment_11" />
+                    <path class="segment segment-12" d="M 196.933,177.320 A 265,265 0 0 1 155.763,214.390 L 29.389,40.451 A 50,50 0 0 0 37.157,33.457 Z" data-label="Communication" id="segment_12" />
+                    <path class="segment segment-13" d="M 155.763,214.390 A 265,265 0 0 1 107.785,242.090 L 20.337,45.677 A 50,50 0 0 0 29.389,40.451 Z" data-label="Augmented Reality" id="segment_13" />
+                    <path class="segment segment-14" d="M 107.785,242.090 A 265,265 0 0 1 55.097,259.209 L 10.396,48.907 A 50,50 0 0 0 20.337,45.677 Z" data-label="Structural Calculations" id="segment_14" />
+                    <path class="segment segment-15" d="M 55.097,259.209 A 265,265 0 0 1 0.000,265.000 L 0.000,50.000 A 50,50 0 0 0 10.396,48.907 Z" data-label="Lighting Calculations" id="segment_15" />
+                    <path class="segment segment-16" d="M 0.000,265.000 A 265,265 0 0 1 -55.097,259.209 L -10.396,48.907 A 50,50 0 0 0 0.000,50.000 Z" data-label="Thermal Performance" id="segment_16" />
+                    <path class="segment segment-17" d="M -55.097,259.209 A 265,265 0 0 1 -107.785,242.090 L -20.337,45.677 A 50,50 0 0 0 -10.396,48.907 Z" data-label="CO2 Calculations" id="segment_17" />
+                    <path class="segment segment-18" d="M -107.785,242.090 A 265,265 0 0 1 -155.763,214.390 L -29.389,40.451 A 50,50 0 0 0 -20.337,45.677 Z" data-label="Named Elements" id="segment_18" />
+                    <path class="segment segment-19" d="M -155.763,214.390 A 265,265 0 0 1 -196.933,177.320 L -37.157,33.457 A 50,50 0 0 0 -29.389,40.451 Z" data-label="Tender Book Coding" id="segment_19" />
+                    <path class="segment segment-20" d="M -196.933,177.320 A 265,265 0 0 1 -229.497,132.500 L -43.301,25.000 A 50,50 0 0 0 -37.157,33.457 Z" data-label="Quantities" id="segment_20" />
+                    <path class="segment segment-21" d="M -229.497,132.500 A 265,265 0 0 1 -252.030,81.890 L -47.553,15.451 A 50,50 0 0 0 -43.301,25.000 Z" data-label="Costing" id="segment_21" />
+                    <path class="segment segment-22" d="M -252.030,81.890 A 265,265 0 0 1 -263.548,27.700 L -49.726,5.226 A 50,50 0 0 0 -47.553,15.451 Z" data-label="Construction Simulation" id="segment_22" />
+                    <path class="segment segment-23" d="M -263.548,27.700 A 265,265 0 0 1 -263.548,-27.700 L -49.726,-5.226 A 50,50 0 0 0 -49.726,5.226 Z" data-label="Temp Works Clash" id="segment_23" />
+                    <path class="segment segment-24" d="M -263.548,-27.700 A 265,265 0 0 1 -252.030,-81.890 L -47.553,-15.451 A 50,50 0 0 0 -49.726,-5.226 Z" data-label="Visual Progress Report" id="segment_24" />
+                    <path class="segment segment-25" d="M -252.030,-81.890 A 265,265 0 0 1 -229.497,-132.500 L -43.301,-25.000 A 50,50 0 0 0 -47.553,-15.451 Z" data-label="Snagging" id="segment_25" />
+                    <path class="segment segment-26" d="M -229.497,-132.500 A 265,265 0 0 1 -196.933,-177.320 L -37.157,-33.457 A 50,50 0 0 0 -43.301,-25.000 Z" data-label="Basic Site Forms" id="segment_26" />
+                    <path class="segment segment-27" d="M -196.933,-177.320 A 265,265 0 0 1 -155.763,-214.390 L -29.389,-40.451 A 50,50 0 0 0 -37.157,-33.457 Z" data-label="ITP Management" id="segment_27" />
+                    <path class="segment segment-28" d="M -155.763,-214.390 A 265,265 0 0 1 -107.785,-242.090 L -20.337,-45.677 A 50,50 0 0 0 -29.389,-40.451 Z" data-label="Handover Documents" id="segment_28" />
+                    <path class="segment segment-29" d="M -107.785,-242.090 A 265,265 0 0 1 -55.097,-259.209 L -10.396,-48.907 A 50,50 0 0 0 -20.337,-45.677 Z" data-label="Commissioning" id="segment_29" />
+                    <path class="segment segment-30" d="M -55.097,-259.209 A 265,265 0 0 1 -0.000,-265.000 L -0.000,-50.000 A 50,50 0 0 0 -10.396,-48.907 Z" data-label="Briefings" id="segment_30" />
+                    <path d="M 0.000,-265.000 A 265,265 0 0 1 107.785,-242.090 L 91.516,-205.548 A 225,225 0 0 0 0.000,-225.000 Z" id="outer_chord_1" class="outer-chord" data-label="Outer Chord 1" />
+                    <path d="M 107.785,-242.090 A 265,265 0 0 1 252.030,-81.890 L 213.988,-69.529 A 225,225 0 0 0 91.516,-205.548 Z" id="outer_chord_2" class="outer-chord" data-label="Outer Chord 2" />
+                    <path d="M 252.030,-81.890 A 265,265 0 0 1 252.030,81.890 L 213.988,69.529 A 225,225 0 0 0 213.988,-69.529 Z" id="outer_chord_3" class="outer-chord" data-label="Outer Chord 3" />
+                    <path d="M 252.030,81.890 A 265,265 0 0 1 107.785,242.090 L 91.516,205.548 A 225,225 0 0 0 213.988,69.529 Z" id="outer_chord_4" class="outer-chord" data-label="Outer Chord 4" />
+                    <path d="M 107.785,242.090 A 265,265 0 0 1 -107.785,242.090 L -91.516,205.548 A 225,225 0 0 0 91.516,205.548 Z" id="outer_chord_5" class="outer-chord" data-label="Outer Chord 5" />
+                    <path d="M -107.785,242.090 A 265,265 0 0 1 -252.030,81.890 L -213.988,69.529 A 225,225 0 0 0 -91.516,205.548 Z" id="outer_chord_6" class="outer-chord" data-label="Outer Chord 6" />
+                    <path d="M -252.030,81.890 A 265,265 0 0 1 -252.030,-81.890 L -213.988,-69.529 A 225,225 0 0 0 -213.988,69.529 Z" id="outer_chord_7" class="outer-chord" data-label="Outer Chord 7" />
+                    <path d="M -252.030,-81.890 A 265,265 0 0 1 -0.000,-265.000 L -0.000,-225.000 A 225,225 0 0 0 -213.988,-69.529 Z" id="outer_chord_8" class="outer-chord" data-label="Outer Chord 8" />
+                    <defs>
+                        <path id="arc_path_1" d="M 0.000,-245.000 A 245,245 0 0 1 99.650,-223.819" fill="none" />
+                        <path id="arc_path_2" d="M 99.650,-223.819 A 245,245 0 0 1 233.009,-75.709" fill="none" />
+                        <path id="arc_path_3" d="M 233.009,-75.709 A 245,245 0 0 1 233.009,75.709" fill="none" />
+                        <path id="arc_path_4" d="M 99.650,223.819 A 245,245 0 0 0 233.009,75.709" fill="none" />
+                        <path id="arc_path_5" d="M -99.650,223.819 A 245,245 0 0 0 99.650,223.819" fill="none" />
+                        <path id="arc_path_6" d="M -233.009,75.709 A 245,245 0 0 0 -99.650,223.819" fill="none" />
+                        <path id="arc_path_7" d="M -233.009,75.709 A 245,245 0 0 1 -233.009,-75.709" fill="none" />
+                        <path id="arc_path_8" d="M -233.009,-75.709 A 245,245 0 0 1 -0.000,-245.000" fill="none" />
+                    </defs>
+                    <text id="label_outer_chord_1" dominant-baseline="middle"><textPath xlink:href="#arc_path_1" startOffset="50%" text-anchor="middle">Survey</textPath></text>
+                    <text id="label_outer_chord_2" dominant-baseline="middle"><textPath xlink:href="#arc_path_2" startOffset="50%" text-anchor="middle">Design</textPath></text>
+                    <text id="label_outer_chord_3" dominant-baseline="middle"><textPath xlink:href="#arc_path_3" startOffset="50%" text-anchor="middle">Quality Assurance</textPath></text>
+                    <text id="label_outer_chord_4" dominant-baseline="middle"><textPath xlink:href="#arc_path_4" startOffset="50%" text-anchor="middle">Visualisation</textPath></text>
+                    <text id="label_outer_chord_5" dominant-baseline="middle"><textPath xlink:href="#arc_path_5" startOffset="50%" text-anchor="middle">Model Based Analysis</textPath></text>
+                    <text id="label_outer_chord_6" dominant-baseline="middle"><textPath xlink:href="#arc_path_6" startOffset="50%" text-anchor="middle">Asset Management</textPath></text>
+                    <text id="label_outer_chord_7" dominant-baseline="middle"><textPath xlink:href="#arc_path_7" startOffset="50%" text-anchor="middle">Scheduling</textPath></text>
+                    <text id="label_outer_chord_8" dominant-baseline="middle"><textPath xlink:href="#arc_path_8" startOffset="50%" text-anchor="middle">Site</textPath></text>
+                    <text x="17.25" y="-164.10" id="label_inner_segment_1" text-anchor="middle" dominant-baseline="middle" transform="rotate(-84.00,17.25,-164.10)">Existing Model Creation</text>
+                    <text x="50.99" y="-156.92" id="label_inner_segment_2" text-anchor="middle" dominant-baseline="middle" transform="rotate(-72.00,50.99,-156.92)">Delap Survey</text>
+                    <text x="82.50" y="-142.89" id="label_inner_segment_3" text-anchor="middle" dominant-baseline="middle" transform="rotate(-60.00,82.50,-142.89)">Discipline Drawings</text>
+                    <text x="110.41" y="-122.62" id="label_inner_segment_4" text-anchor="middle" dominant-baseline="middle" transform="rotate(-48.00,110.41,-122.62)">Digital Collaboration</text>
+                    <text x="133.49" y="-96.98" id="label_inner_segment_5" text-anchor="middle" dominant-baseline="middle" transform="rotate(-36.00,133.49,-96.98)">Model Based Drawings</text>
+                    <text x="150.74" y="-67.11" id="label_inner_segment_6" text-anchor="middle" dominant-baseline="middle" transform="rotate(-24.00,150.74,-67.11)">Design Review</text>
+                    <text x="161.39" y="-34.31" id="label_inner_segment_7" text-anchor="middle" dominant-baseline="middle" transform="rotate(-12.00,161.39,-34.31)">Clash Detection</text>
+                    <text x="165.00" y="0.00" id="label_inner_segment_8" text-anchor="middle" dominant-baseline="middle" transform="rotate(0.00,165.00,0.00)">IDC Review</text>
+                    <text x="161.39" y="34.31" id="label_inner_segment_9" text-anchor="middle" dominant-baseline="middle" transform="rotate(12.00,161.39,34.31)">Quality Assurance</text>
+                    <text x="150.74" y="67.11" id="label_inner_segment_10" text-anchor="middle" dominant-baseline="middle" transform="rotate(24.00,150.74,67.11)">Marketing</text>
+                    <text x="133.49" y="96.98" id="label_inner_segment_11" text-anchor="middle" dominant-baseline="middle" transform="rotate(36.00,133.49,96.98)">Tender Submission</text>
+                    <text x="110.41" y="122.62" id="label_inner_segment_12" text-anchor="middle" dominant-baseline="middle" transform="rotate(48.00,110.41,122.62)">Communication</text>
+                    <text x="82.50" y="142.89" id="label_inner_segment_13" text-anchor="middle" dominant-baseline="middle" transform="rotate(60.00,82.50,142.89)">Augmented Reality</text>
+                    <text x="50.99" y="156.92" id="label_inner_segment_14" text-anchor="middle" dominant-baseline="middle" transform="rotate(72.00,50.99,156.92)">Structural Calculations</text>
+                    <text x="17.25" y="164.10" id="label_inner_segment_15" text-anchor="middle" dominant-baseline="middle" transform="rotate(84.00,17.25,164.10)">Lighting Calculations</text>
+                    <text x="-17.25" y="164.10" id="label_inner_segment_16" text-anchor="middle" dominant-baseline="middle" transform="rotate(276.00,-17.25,164.10)">Thermal Performance</text>
+                    <text x="-50.99" y="156.92" id="label_inner_segment_17" text-anchor="middle" dominant-baseline="middle" transform="rotate(288.00,-50.99,156.92)">CO2 Calculations</text>
+                    <text x="-82.50" y="142.89" id="label_inner_segment_18" text-anchor="middle" dominant-baseline="middle" transform="rotate(300.00,-82.50,142.89)">Named Elements</text>
+                    <text x="-110.41" y="122.62" id="label_inner_segment_19" text-anchor="middle" dominant-baseline="middle" transform="rotate(312.00,-110.41,122.62)">Tender Book Coding</text>
+                    <text x="-133.49" y="96.98" id="label_inner_segment_20" text-anchor="middle" dominant-baseline="middle" transform="rotate(324.00,-133.49,96.98)">Quantities</text>
+                    <text x="-150.74" y="67.11" id="label_inner_segment_21" text-anchor="middle" dominant-baseline="middle" transform="rotate(336.00,-150.74,67.11)">Costing</text>
+                    <text x="-161.39" y="34.31" id="label_inner_segment_22" text-anchor="middle" dominant-baseline="middle" transform="rotate(348.00,-161.39,34.31)">Construction Simulation</text>
+                    <text x="-165.00" y="0.00" id="label_inner_segment_23" text-anchor="middle" dominant-baseline="middle" transform="rotate(360.00,-165.00,0.00)">Temp Works Clash</text>
+                    <text x="-161.39" y="-34.31" id="label_inner_segment_24" text-anchor="middle" dominant-baseline="middle" transform="rotate(372.00,-161.39,-34.31)">Visual Progress Report</text>
+                    <text x="-150.74" y="-67.11" id="label_inner_segment_25" text-anchor="middle" dominant-baseline="middle" transform="rotate(384.00,-150.74,-67.11)">Snagging</text>
+                    <text x="-133.49" y="-96.98" id="label_inner_segment_26" text-anchor="middle" dominant-baseline="middle" transform="rotate(396.00,-133.49,-96.98)">Basic Site Forms</text>
+                    <text x="-110.41" y="-122.62" id="label_inner_segment_27" text-anchor="middle" dominant-baseline="middle" transform="rotate(408.00,-110.41,-122.62)">ITP Management</text>
+                    <text x="-82.50" y="-142.89" id="label_inner_segment_28" text-anchor="middle" dominant-baseline="middle" transform="rotate(420.00,-82.50,-142.89)">Handover Documents</text>
+                    <text x="-50.99" y="-156.92" id="label_inner_segment_29" text-anchor="middle" dominant-baseline="middle" transform="rotate(432.00,-50.99,-156.92)">Commissioning</text>
+                    <text x="-17.25" y="-164.10" id="label_inner_segment_30" text-anchor="middle" dominant-baseline="middle" transform="rotate(444.00,-17.25,-164.10)">Briefings</text>
+                    <circle id="center_circle" cx="0" cy="0" r="50" />
+                    <text id="center_label" x="0" y="0" text-anchor="middle" dominant-baseline="middle">
+                        <tspan x="0" dy="-0.6em">Digital</tspan>
+                        <tspan x="0" dy="1.2em">Construction</tspan>
+                    </text>
+                    
+                </svg>
+            </div>
+        </div>
+
+        
+
+        <div class="right-column">
+            <div id="segment-details">
+              <h2 id="details-title">Hover over a segment</h2>
+              <p id="details-description">Details about the hovered segment will appear here.</p>
+              <div class="details-row">
+                <div class="details-section details-section-half">
+                  <h4>Resources</h4>
+                  <ul id="details-resources"></ul>
+                </div>
+                <div class="details-section details-section-half">
+                  <h4>Platform</h4>
+                  <ul id="details-platform"></ul>
+                </div>
+              </div>
+              <div class="details-row">
+                <div class="details-section details-section-half">
+                  <h4>Enquiry Document</h4>
+                  <ul id="details-enquiry"></ul>
+                </div>
+                <div class="details-section details-section-half">
+                  <h4>Project Document</h4>
+                  <ul id="details-project"></ul>
+                </div>
+              </div>
+            </div>
+
+            <div id="preset-details" style="display:none;">
+              <h2 id="preset-title"></h2>
+              <p id="preset-description"></p>
+              <ul id="preset-benefits"></ul>
+              <div id="preset-downloads"></div>
+            </div>
+          </div>
+
+        </div>
+
+    <script>
+        // --- State Variables ---
+        let activePreset = null;    // Tracks the *name* of the currently active preset (e.g., 'preset-essential', 'preset-smartplus')
+        let currentlyExpanded = null; // Tracks which base preset group is expanded ('essential', 'smart', 'advanced')
+        let lockedSegmentId = null; // Tracks the ID of a clicked/locked segment
+
+        // --- Data (Segment & Preset - NO CHANGES) ---
+                // --- Data (Segment & Preset - NO CHANGES) ---
+                const segmentData = { /* ... Your existing segmentData ... */
+             'segment_01': {
+                 title: "Existing Model Creation",
+                 description: "Creating a three-dimensional digital twin of an existing structure provides a reliable foundation by capturing spatial, structural, and material details. This reduces uncertainties, ensures accurate alignment with new designs, and minimises risks of clashes. It streamlines coordination, supports informed decision-making, cost estimation, and scheduling, while enabling sustainability through integration or reuse. This approach ultimately saves time, lowers costs, and ensures efficient and successful project delivery.",
+                 resources: [ /* Using updated structure */
+                     { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                     { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                     { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                     { text: "External Survey & Modelling", checked: true, info: false, infoLink: null, download: false, downloadPath: null }
+                 ],
+                 platform: [
+                     { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+                     { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+                     { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+                     { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+                 ],
+                 enquiry: [
+                     { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+                     { text: "Codification Short", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+                 ],
+                 project: [
+                     { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+                     { text: "Codification Manual", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+                     { text: "Model Production Templates", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+                 ]
+            },
+            'segment_02': {
+                 title: "Delap Survey",
+                 description: "Conducting a dilapidation survey with 360-degree photos and Dalux Field enhances BIM strategies by efficiently capturing existing conditions. Integrating imagery with the app ensures seamless documentation, real-time access, and links observations to the digital model. This approach improves collaboration, enables remote visualisation of site conditions, and ensures accurate model representation. By addressing risks and design conflicts early, it saves time and reduces costs in later project stages.                 ",
+                 resources: [ /* Using updated structure */
+                     { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                     { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                     { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                     { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+                 ],
+                 platform: [
+                     { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+                     { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+                     { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+                     { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+                 ],
+                 enquiry: [
+                     { text: "Digital Execution Scope", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+                     { text: "Codification Short", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+                 ],
+                 project: [
+                     { text: "Digital Execution Plan", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+                     { text: "Codification Manual", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+                     { text: "Model Production Templates", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+                 ]
+            },
+            'segment_03': {
+                 title: "Discipline Drawings",
+                 description: "Generating discipline-specific drawings from a coordinated model ensures consistency, accuracy, and efficiency. Drawings derived from a unified, clash-free model align all disciplines—architectural, structural, and MEP—with the design intent, reducing errors and discrepancies during construction. Dynamic linking ensures updates to the model automatically reflect in drawings, streamlining workflows and improving collaboration. This approach enhances compliance with project standards, saves time, and minimises rework, delivering significant efficiency gains",
+                 resources: [ /* Using updated structure */
+                     { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                     { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                     { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                     { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+                 ],
+                 platform: [
+                     { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+                     { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+                     { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+                     { text: "SharePoint", checked: true, info: false, infoLink: null, download: false, downloadPath: null }
+                 ],
+                 enquiry: [
+                     { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+                     { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+                 ],
+                 project: [
+                     { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+                     { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+                     { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+                 ]
+            },
+
+
+            'segment_04': {
+            title: "Digital Collaboration",
+            description: "Prioritising regular model exchanges during design development ensures seamless coordination across disciplines. By providing teams with up-to-date models, designers can incorporate real-time changes and dependencies, aligning their work with the overall design intent. This approach reduces errors, minimises design conflicts, and fosters transparency among stakeholders. Regular exchanges improve efficiency in design iterations, promote a shared understanding of the project, and ensure accurate, coordinated deliverables ready for construction",
+            resources: [ /* Using updated structure */
+                { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+            ],
+            platform: [
+                { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+                { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+                { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+                { text: "SharePoint", checked: true, info: false, infoLink: null, download: false, downloadPath: null }
+            ],
+            enquiry: [
+                { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+                { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+            ],
+            project: [
+                { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+                { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+                { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+            ]
+        },
+
+            'segment_05': {
+              title: "Model Based Drawings",
+                description: "Producing model-based drawings ensures accuracy, consistency, and efficiency by generating 2D documentation directly from the 3D model. Dynamically linked to the model, these drawings automatically reflect design updates, reducing discrepancies and errors. This approach streamlines drawing production, enhances coordination across disciplines, and eliminates manual updates. By providing a single source of truth, model-based drawings improve quality, save time, and support better decision-making throughout design and construction.",
+                resources: [ /* Using updated structure */
+                    { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                    { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                    { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+                    { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+                ],
+                platform: [
+                    { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+                    { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+                    { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+                    { text: "SharePoint", checked: true, info: false, infoLink: null, download: false, downloadPath: null }
+                ],
+                enquiry: [
+                    { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+                    { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+                ],
+                project: [
+                    { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+                    { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+                    { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+                ]
+            },
+
+'segment_06': {
+    title: "Design Review",
+    description: "Incorporating design reviews into Digital Construction processes minimises risk and ensures robust proposals. A thorough review using coordinated digital models identifies clashes, inconsistencies, and constructability challenges early, addressing risks before construction. This proactive approach mitigates costly rework and delays, improves bid accuracy, and reassures stakeholders of your commitment to efficient delivery. Aligning design reviews with workflows enables risk-informed solutions, enhancing project credibility and competitive advantage.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_07': {
+    title: "Clash Detection",
+    description: "Incorporating clash detection into your digital construction strategy is vital for reducing risks and enhancing project accuracy. By identifying and resolving conflicts between design elements—such as structural, architectural, and MEP components—early in the design phase, you can prevent costly delays, rework, and on-site disruptions. A robust clash detection process demonstrates your commitment to a well-coordinated plan, reassuring stakeholders of a precise, reliable approach and ensuring a smoother construction process.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_08': {
+    title: "IDC Review",
+    description: "Including a model-based Interdisciplinary Check (IDC) at key design stages is essential for a robust digital construction strategy. IDC ensures all disciplines—architectural, structural, and MEP—are reviewed and aligned within a coordinated model. Conducting these checks at predefined milestones identifies and resolves conflicts early, reducing the risk of rework or delays. Highlighting IDC in your bid demonstrates precision, collaboration, and proactive risk management, giving stakeholders confidence in seamless project delivery.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_09': {
+    title: "Quality Assurance",
+    description: "Requiring clash detection results and verifying the model meets specified information requirements at design approval is a critical part of a strong digital construction strategy. This ensures conflicts are resolved, and the model contains the necessary detail and accuracy for the next project stages. Incorporating these steps reduces errors, delays, and rework while demonstrating precision and accountability, giving stakeholders confidence in a technically sound design aligned with project standards.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_10': {
+    title: "Marketing",
+    description: "Using visualisations from a three-dimensional digital twin provides a powerful tool for impactful marketing. High-quality renderings, animations, and walkthroughs allow stakeholders and clients to visualise the finished project with realism, showcasing design intent and innovative features. These visualisations communicate complex ideas effectively and elevate proposals, presentations, and campaigns. Leveraging the digital twin enhances your brand image while demonstrating a forward-thinking, technology-driven approach to construction and design.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_11': {
+    title: "Tender Submission",
+    description: "Using a digital twin for a tender submission demonstrates a risk-averse and value-driven approach. By visualising the project in detail, it provides the prospective client with a clear understanding of the design and methodology, instilling confidence in our expertise. Simultaneously, it enables us to analyse the project thoroughly, identifying potential risks and complexities before committing to a fee, ensuring accurate proposals and a well-informed, reliable plan for successful delivery.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_12': {
+    title: "Comunication",
+    description: "Communicating with a digital twin offers clarity and engagement for internal teams, stakeholders, and the public. It provides real-time visualisation of the design, construction progress, and milestones, ensuring alignment and reducing misunderstandings. Internal teams benefit from precise coordination, while stakeholders gain confidence through transparency. For the public, the digital twin simplifies complex ideas, enhancing understanding and support. This approach fosters collaboration, trust, and informed decision-making across all project participants.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_13': {
+    title: "Augmented Reality",
+    description: "Using augmented reality (AR) on-site enhances construction accuracy by overlaying design onto the physical environment in real-time. It enables teams to compare built elements with the design, ensuring precise alignment of openings, services, and structural components. AR helps identify and resolve discrepancies early, reducing costly errors and rework. This technology streamlines workflows, improves quality assurance, and keeps projects on track while maintaining the highest standards of efficiency and precision.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_14': {
+    title: "Structural Calculations",
+    description: "Using a three-dimensional digital twin for structural calculations ensures precision and efficiency by integrating structural analysis tools directly with the model. Engineers can perform accurate load assessments and stress tests using exact geometry and material data, avoiding errors from manual data transfers. Updates to the model are automatically reflected in calculations, enhancing collaboration between design and engineering teams. This approach saves time, improves coordination, and ensures a reliable, safe structural design.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: true, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_15': {
+    title: "Lighting Calculations",
+    description: "Using a three-dimensional digital twin for lighting calculations ensures precision and efficiency by integrating design and analysis. Lighting simulations within the 3D model evaluate factors like daylight penetration, artificial lighting, and illumination levels, using the latest geometry and material data. This eliminates manual data transfers and enhances collaboration between architects, engineers, and consultants. The approach streamlines workflows, optimises functionality and aesthetics, and supports energy-efficient, high-quality design outcomes.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: true, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_16': {
+    title: "Thermal Performance",
+    description: "Using a three-dimensional digital twin for thermal performance analysis ensures energy-efficient and sustainable building design. By analysing insulation, glazing, and material properties directly in the model, designers can simulate heat transfer, energy use, and comfort levels with precision. This eliminates manual data handling errors and allows quick optimisation during design. The approach streamlines workflows, fosters collaboration, and supports regulatory compliance while reducing energy costs and enhancing building efficiency.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: true, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_17': {
+    title: "CO2 Calculations",
+    description: "Using a three-dimensional digital twin for CO2 calculations ensures accurate and reliable analysis of embodied and operational carbon. By integrating compatible software, teams can assess materials, transportation, construction processes, and building energy use directly from the model. This approach reduces errors and enables informed decisions on materials, methods, and systems early in design, optimising sustainability. It supports regulatory compliance, reduces environmental impact, and transparently communicates carbon reduction strategies to stakeholders.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: true, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_18': {
+    title: "Named Elements",
+    description: "Consistent element naming in a three-dimensional digital twin is key to effective data management. A structured naming convention uniquely identifies components, linking them to metadata like materials and quantities, enabling accurate scheduling, costing, and analysis. This standardisation ensures seamless integration with management tools and enhances team communication. By prioritising naming conventions, projects gain efficiency, traceability, and reliability, establishing a solid foundation for managing information throughout the project lifecycle.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_19': {
+    title: "Tender Book Codings",
+    description: "Embedding tender book codes into a three-dimensional digital twin ensures consistency between tender costs, schedules, and Datacow information. By linking elements directly to costs and activities, this approach integrates design, construction, and financial planning. It enables real-time comparison of actual costs against tender allowances, identifying discrepancies early. This ensures transparency, streamlines workflows, and supports data-driven decisions, aligning design intent, budget, and programme throughout the project lifecycle.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_20': {
+    title: "Quantities",
+    description: "Extracting quantities from a three-dimensional digital twin ensures accuracy and efficiency in construction planning, earthworks, and procurement. Quantities are derived from precise geometry and specifications, enabling accurate measurements for materials and volumes. This is crucial for tasks like cut-and-fill calculations, directly impacting costs and timelines. Detailed quantity breakdowns streamline procurement, reduce waste, and ensure timely delivery. Using the model saves time, minimises errors, and aligns planning, procurement, and costs with the design.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_21': {
+    title: "Costings",
+    description: "Linking costs from a three-dimensional digital twin to Datacow and tender book allowances ensures accurate and consistent project cost management. Embedding cost data into the model allows teams to compare actual costs with allowances, ensuring precise budget tracking. Real-time updates streamline decision-making and proactive adjustments. Integrating Datacow aligns costing, scheduling, and procurement, enhancing efficiency and accountability while giving stakeholders confidence in the project’s financial accuracy and reliability.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_22': {
+    title: "Construction Simulation",
+    description: "Linking the three-dimensional digital twin with the project programme enables real-time construction simulation, visualising sequences and optimising delivery. This approach improves coordination, identifies bottlenecks, and resolves sequencing conflicts proactively. It enhances stakeholder communication with clear, visual insights, fostering alignment and confidence in the plan. Additionally, construction simulation supports resource allocation, timeline optimisation, and smarter decision-making, reducing risks and ensuring an efficient, streamlined process that keeps the project on schedule.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_23': {
+    title: "Temp Works Clash",
+    description: "Construction simulation, by linking the three-dimensional digital twin with the project programme, enables real-time planning and clash detection between temporary works and permanent elements. This approach identifies conflicts involving scaffolding, formwork, or access platforms, ensuring seamless integration into the project plan. It minimises delays, rework, and disruptions while enhancing coordination across teams. This precision fosters safer, more efficient construction and reinforces confidence in the project’s execution strategy.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_24': {
+    title: "Visual Progress Report",
+    description: "Using a three-dimensional digital twin and augmented reality (AR) to compare site progress with the programmed plan provides a cutting-edge method for tracking project performance. Linking the model to the schedule allows AR to overlay planned sequences onto the physical site, identifying discrepancies, delays, or missing components. This dynamic approach improves inspections, fosters collaboration, and enables proactive decision-making, ensuring the project stays aligned with its schedule and objectives.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_25': {
+    title: "Snagging List",
+    description: "Attaching snagging lists to the three-dimensional digital twin streamlines the snagging process by linking issues directly to corresponding model elements. This provides precise location, context, and details for each snag, allowing teams to assess their impact efficiently. Assigning snags within the model enhances accountability and tracking, while real-time visualisations help prioritise actions. This integrated approach saves time, improves communication, and ensures a smoother, more coordinated path to project completion.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_26': {
+    title: "Basic Site Forms",
+    description: "Using the Dalux system to assign site forms to the three-dimensional digital twin enhances communication and streamlines workflows. By linking forms like inspections or permits to specific model elements or locations, teams access clear, context-rich information, reducing standalone paperwork. Real-time updates and notifications improve collaboration and accountability. This integration simplifies tasks, saves time, reduces errors, and ensures an efficient, centralised workflow for on-site processes aligned with the model.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_27': {
+    title: "ITP Management",
+    description: "Using the Dalux system for model-based Inspection and Test Plan (ITP) management enhances clarity, accountability, and efficiency. Linking ITPs to elements in the three-dimensional digital twin ensures inspection requirements, testing procedures, and workflows are clearly communicated. Real-time updates streamline progress tracking and issue resolution. This transparency reduces missed inspections, ensures quality checks, and leads to smoother handovers, giving stakeholders confidence that all project aspects meet required standards.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_28': {
+    title: "Handover Documents",
+    description: "Using a three-dimensional digital twin to house site information streamlines the collation and production of handover documents. By embedding data like inspection records, material certifications, O&M manuals, and as-built details, all required information is centralised and easily accessible. This eliminates manual collation, reducing errors and saving time. The model provides a visual project representation, ensuring stakeholders can verify handover requirements, simplifying document production, and providing end-users with organised project information.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_29': {
+    title: "Commissioning",
+    description: "Using a three-dimensional digital twin to store commissioning evidence, such as certificates, warranties, and photo documentation, centralises critical project information. By linking evidence to specific model elements, teams ensure organised, traceable data for compliance verification during inspections or audits. Photo evidence provides a visual record of completed works, while certificates support future maintenance and warranty claims. This streamlined approach improves project closeout efficiency and offers stakeholders a clear, reliable repository for facility management.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+},
+
+'segment_30': {
+    title: "Briefings",
+    description: "Using a three-dimensional digital twin in site briefings improves communication and clarity of planned activities. Visual presentations of the model allow teams to understand design intent, sequences, and interfaces intuitively. This reduces ambiguity, ensuring all stakeholders share a common understanding. The model highlights critical focus areas, complex details, and logistical considerations, helping identify challenges and align efforts. This approach enhances collaboration, ensures safety, and promotes efficient execution of tasks according to plan.",
+    resources: [ /* Using updated structure */
+        { text: "Digital Construction Manager", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Design Coordinator", checked: false, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "Digital Site Coordinator", checked: true, info: true, infoLink: "Roles.html", download: false, downloadPath: null },
+        { text: "External Survey & Modelling", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    platform: [
+        { text: "DataCow", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Box", checked: false, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "Dalux Field", checked: true, info: false, infoLink: null, download: false, downloadPath: null },
+        { text: "SharePoint", checked: false, info: false, infoLink: null, download: false, downloadPath: null }
+    ],
+    enquiry: [
+        { text: "Digital Execution Scope", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-des" },
+        { text: "Codification Short", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cs" }
+    ],
+    project: [
+        { text: "Digital Execution Plan", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-dep" },
+        { text: "Codification Manual", checked: true, info: false, infoLink: null, download: true, downloadPath: "#download-s1-cm" },
+        { text: "Model Production Templates", checked: false, info: false, infoLink: null, download: true, downloadPath: "#download-s1-mpt" }
+    ]
+            }
+        }; // *** END OF Segment DATA ***
+
+
+        const presetData = { /* ... Your existing presetData ... */
+              'preset-essential': {
+                title: 'Essential Digital Construction Strategy',
+                description: 'The Essentials Digital Construction Strategy focuses on core tools and processes to streamline project delivery, ensuring collaboration and reducing risks without unnecessary complexity.',
+                benefits: [
+                  { label: 'Clear Communication',      text: 'Use 3D models for site briefings and visual presentations, ensuring teams understand tasks and design intent.' },
+                  { label: 'Basic Site Efficiency',    text: 'Digital forms and snagging processes linked to the model simplify on‑site tasks and improve issue tracking.' },
+                  { label: 'Design Coordination',      text: 'Shared, clash‑free models align all disciplines, reducing errors and costly rework.' },
+                  { label: 'Integrated Visualisation', text: 'Tools like augmented reality provide real‑time comparisons of design versus construction, enhancing quality control.' }
+                ],
+                downloads: [
+                  { label: 'Internal Requirements', iconClass: 'icon-download', href: '#download-internal' },
+                  { label: 'Design Brief',          iconClass: 'icon-download', href: '#download-brief' }
+                ]
+              },
+              'preset-essentialplus': {
+                title: 'Essential+ Digital Construction Strategy', // Differentiate title slightly
+                description: 'Building on Essentials, this adds enhanced survey methods and marketing visualisation for greater project insight and communication.',
+                benefits: [
+                  { label: 'Enhanced Survey',          text: 'Leverage existing model creation and dilapidation surveys for a more accurate project start.'},
+                  { label: 'Clear Communication',      text: 'Use 3D models for site briefings and visual presentations, ensuring teams understand tasks and design intent.' },
+                  { label: 'Basic Site Efficiency',    text: 'Digital forms and snagging processes linked to the model simplify on‑site tasks and improve issue tracking.' },
+                  { label: 'Design Coordination',      text: 'Shared, clash‑free models align all disciplines, reducing errors and costly rework.' },
+                  { label: 'Integrated Visualisation', text: 'Tools like augmented reality provide real‑time comparisons of design versus construction, enhancing quality control.' },
+                   { label: 'Marketing Edge',          text: 'Utilise design review outputs and marketing visualisations derived from the model.'}
+                ],
+                downloads: [
+                  { label: 'Internal Requirements', iconClass: 'icon-download', href: '#download-internal' },
+                  { label: 'Design Brief',          iconClass: 'icon-download', href: '#download-brief' }
+                ]
+              },
+              'preset-smart':     {
+                title: 'Smart Digital Construction Strategy',
+                description: 'The Smart Digital Construction Strategy enhances project delivery by integrating advanced digital tools for risk reduction, efficiency improvements, and streamlined processes.',
+                benefits: [
+                   { label: 'Survey Accuracy',      text: 'Detailed 3D models of existing conditions and precise site surveys ensure early identification of risks, reducing costly design errors.' },
+                   { label: 'Design Precision',    text: 'Enhanced design reviews and interdisciplinary checks ensure all disciplines are fully aligned, minimising clashes and rework.' },
+                   { label: 'Data Management',      text: 'Consistent naming and embedded quantities improve traceability, ensuring accurate cost tracking and resource allocation.' },
+                   { label: 'Enhanced Collaboration', text: 'Utilise digital platforms for collaboration, quality assurance and tender information.'},
+                   { label: 'Site Management',      text: 'Integrate basic site forms, snagging and briefings for better site control.'}
+                ],
+                downloads: [
+                  { label: 'Internal Requirements', iconClass: 'icon-download', href: '#download-internal' },
+                  { label: 'Design Brief',          iconClass: 'icon-download', href: '#download-brief' }
+                ]
+              },
+              'preset-smartplus': {
+                title: 'Smart+ Digital Construction Strategy', // Differentiate title slightly
+                description: 'Extends the Smart strategy with integrated costing and tender book coding for superior financial control and data consistency.',
+                 benefits: [
+                   { label: 'Survey Accuracy',      text: 'Detailed 3D models of existing conditions and precise site surveys ensure early identification of risks, reducing costly design errors.' },
+                   { label: 'Design Precision',    text: 'Enhanced design reviews and interdisciplinary checks ensure all disciplines are fully aligned, minimising clashes and rework.' },
+                   { label: 'Data Management',      text: 'Consistent naming and embedded quantities improve traceability, ensuring accurate cost tracking and resource allocation.' },
+                   { label: 'Enhanced Collaboration', text: 'Utilise digital platforms for collaboration, quality assurance and tender information.'},
+                   { label: 'Site Management',      text: 'Integrate basic site forms, snagging and briefings for better site control.'},
+                   { label: 'Financial Integration', text: 'Directly link tender book codes and costing data within the model for enhanced budget tracking.'}
+                ],
+                downloads: [
+                  { label: 'Internal Requirements', iconClass: 'icon-download', href: '#download-internal' },
+                  { label: 'Design Brief',          iconClass: 'icon-download', href: '#download-brief' }
+                ]
+              },
+              'preset-advanced':  {
+                title: 'Advanced Digital Construction Strategy',
+                description: 'The Advanced Digital Construction Strategy leverages sophisticated tools for comprehensive project oversight, maximising efficiency, sustainability, and quality control.',
+                benefits: [
+                  { label: 'Full Lifecycle Management', text: 'Integrates everything from survey and design through to site management, handover, and asset data.'},
+                  { label: 'Accurate Planning',      text: 'Advanced simulations and progress tracking ensure construction sequences are optimised, reducing delays and on-site disruptions.' },
+                  { label: 'Quality Assurance',    text: 'Automated inspection plans (ITP) and seamless handover documents improve accountability and ensure all project standards are met.' },
+                  { label: 'Cost & Resource Efficiency', text: 'Integrated costing tools and tender coding enable precise budget control and smarter resource allocation.' },
+                  { label: 'Sustainability Focus', text: 'Includes lighting, thermal, and basic structural analysis capabilities within the digital workflow.' }
+                 ],
+                downloads: [
+                  { label: 'Internal Requirements', iconClass: 'icon-download', href: '#download-internal' },
+                  { label: 'Design Brief',          iconClass: 'icon-download', href: '#download-brief' }
+                ]
+              },
+              'preset-advancedplus': {
+                title: 'Advanced+ Digital Construction Strategy', // Differentiate title slightly
+                description: 'The pinnacle strategy, adding detailed CO2 calculations, commissioning evidence, and full handover documentation management within the digital twin.',
+                benefits: [
+                  { label: 'Full Lifecycle Management', text: 'Integrates everything from survey and design through to site management, handover, and asset data.'},
+                  { label: 'Accurate Planning',      text: 'Advanced simulations and progress tracking ensure construction sequences are optimised, reducing delays and on-site disruptions.' },
+                  { label: 'Quality Assurance',    text: 'Automated inspection plans (ITP) and seamless handover documents improve accountability and ensure all project standards are met.' },
+                  { label: 'Cost & Resource Efficiency', text: 'Integrated costing tools and tender coding enable precise budget control and smarter resource allocation.' },
+                  { label: 'Sustainability Focus', text: 'Includes lighting, thermal, CO2, and basic structural analysis capabilities within the digital workflow.' },
+                  { label: 'Complete Handover', text: 'Manages commissioning evidence and handover documents directly within the model for efficient closeout.'}
+                ],
+                downloads: [
+                  { label: 'Internal Requirements', iconClass: 'icon-download', href: '#download-internal' },
+                  { label: 'Design Brief',          iconClass: 'icon-download', href: '#download-brief' }
+                ]
+              }
+            }; // *** END OF Preset DATA ***
+
+        // --- DOM Element References ---
+        const segmentDetailsPanel = document.getElementById('segment-details');
+        const detailsTitle = document.getElementById('details-title');
+        const detailsDescription = document.getElementById('details-description');
+        const detailsResourcesUl = document.getElementById('details-resources');
+        const detailsPlatformUl = document.getElementById('details-platform');
+        const detailsEnquiryUl = document.getElementById('details-enquiry');
+        const detailsProjectUl = document.getElementById('details-project');
+
+        const presetDetailsPanel = document.getElementById('preset-details');
+        const presetTitle = document.getElementById('preset-title');
+        const presetDescription = document.getElementById('preset-description');
+        const presetBenefitsUl = document.getElementById('preset-benefits');
+        const presetDownloadsDiv = document.getElementById('preset-downloads');
+
+        const presetsContainer = document.querySelector('.presets');
+        const allPresetButtons = document.querySelectorAll('.presets .preset-button');
+        const allSegmentElements = document.querySelectorAll('.segment');
+
+        // --- Segment Data & Rules ---
+        const hoverRules = { /* ... Your existing hoverRules ... */
+            'segment_01': [], 'segment_02': ['segment_01'], 'segment_03': [], 'segment_04': [],
+            'segment_05': ['segment_04','segment_07'], 'segment_06': ['segment_03','segment_04','segment_05','segment_07'],
+            'segment_07': ['segment_04'], 'segment_08': ['segment_03','segment_04','segment_05','segment_06','segment_07'],
+            'segment_09': ['segment_04','segment_05','segment_07'], 'segment_10': ['segment_04'], 'segment_11': ['segment_04'],
+            'segment_12': ['segment_04'], 'segment_13': ['segment_04','segment_05','segment_07'],
+            'segment_14': ['segment_04','segment_05'], 'segment_15': ['segment_04','segment_05'],
+            'segment_16': ['segment_04','segment_05'], 'segment_17': ['segment_04','segment_05'],
+            'segment_18': ['segment_04','segment_09'], 'segment_19': ['segment_04','segment_09','segment_18'],
+            'segment_20': ['segment_04','segment_09','segment_18','segment_19'],
+            'segment_21': ['segment_04','segment_09','segment_18','segment_19','segment_20'],
+            'segment_22': ['segment_04','segment_05','segment_07','segment_09','segment_18','segment_19'],
+            'segment_23': ['segment_04','segment_05','segment_07','segment_09','segment_18','segment_19','segment_22'],
+            'segment_24': ['segment_04','segment_05','segment_09','segment_18','segment_19','segment_22'],
+            'segment_25': ['segment_03','segment_04','segment_05','segment_07'], 'segment_26': ['segment_03'],
+            'segment_27': ['segment_03','segment_04','segment_05','segment_26'],
+            'segment_28': ['segment_03','segment_04','segment_05','segment_07','segment_09','segment_25','segment_26','segment_27'],
+            'segment_29': ['segment_03','segment_04','segment_05','segment_09','segment_18','segment_26'],
+            'segment_30': ['segment_03','segment_04','segment_05','segment_07']
+        };
+        const segments = {}; // Populate segment references
+        allSegmentElements.forEach(el => { segments[el.id] = el; });
+
+        // --- Preset Segment IDs ---
+        const essentialSegmentIds     = ['segment_03', 'segment_04', 'segment_05', 'segment_07', 'segment_12', 'segment_25', 'segment_26', 'segment_30'];
+        const essentialSegmentplusIds = ['segment_01', 'segment_02', 'segment_06', 'segment_09', 'segment_10', 'segment_13'];
+        const smartSegmentIds         = ['segment_01', 'segment_02', 'segment_03','segment_04', 'segment_05', 'segment_06','segment_07', 'segment_08', 'segment_09', 'segment_10','segment_12','segment_13', 'segment_18', 'segment_20', 'segment_25','segment_26','segment_30'];
+        const smartSegmentplusIds     = ['segment_19', 'segment_21'];
+        const advancedSegmentIds      = ['segment_01', 'segment_02', 'segment_03', 'segment_04', 'segment_05','segment_06', 'segment_07', 'segment_08', 'segment_09', 'segment_10','segment_11', 'segment_12', 'segment_13', 'segment_14', 'segment_15','segment_16', 'segment_18', 'segment_19', 'segment_20', 'segment_21','segment_22', 'segment_23', 'segment_24', 'segment_25', 'segment_26','segment_27', 'segment_30'];
+        const advancedSegmentplusIds  = ['segment_17', 'segment_28','segment_29'];
+
+        // --- Core Functions ---
+
+        // Clears all segment highlighting classes
+        function clearSegmentHighlights() {
+            allSegmentElements.forEach(segment => {
+                segment.classList.remove(
+                    'highlight-primary', 'highlight-secondary',
+                    'highlight-locked', 'highlight-locked-secondary',
+                    'preset-essential-base', 'preset-essential-plus',
+                    'preset-smart-base', 'preset-smart-plus',
+                    'preset-advanced-base', 'preset-advanced-plus'
+                );
+                // Reset fill/stroke via CSS classes is generally better,
+                // but direct style manipulation might be needed if complex overrides exist
+                 segment.style.fill = ''; // Reset direct styles if any
+                 segment.style.stroke = '';
+                 segment.style.strokeWidth = '';
+                 segment.style.fillOpacity = '';
+            });
+        }
+
+        // Applies preset highlighting using CSS classes
+        function applyPresetHighlightingVisuals(presetName) {
+            clearSegmentHighlights(); // Clear previous highlights
+            let baseIds = [], plusIds = [], baseClass = '', plusClass = '';
+
+            switch(presetName) {
+                case 'preset-essential':
+                    baseIds = essentialSegmentIds; baseClass = 'preset-essential-base';
+                    break;
+                case 'preset-essentialplus':
+                    baseIds = essentialSegmentIds; plusIds = essentialSegmentplusIds;
+                    baseClass = 'preset-essential-base'; plusClass = 'preset-essential-plus';
+                    break;
+                case 'preset-smart':
+                    baseIds = smartSegmentIds; baseClass = 'preset-smart-base';
+                     break;
+                 case 'preset-smartplus':
+                     baseIds = smartSegmentIds; plusIds = smartSegmentplusIds;
+                     baseClass = 'preset-smart-base'; plusClass = 'preset-smart-plus';
+                     break;
+                 case 'preset-advanced':
+                     baseIds = advancedSegmentIds; baseClass = 'preset-advanced-base';
+                     break;
+                 case 'preset-advancedplus':
+                     baseIds = advancedSegmentIds; plusIds = advancedSegmentplusIds;
+                     baseClass = 'preset-advanced-base'; plusClass = 'preset-advanced-plus';
+                     break;
+             }
+
+             baseIds.forEach(id => segments[id]?.classList.add(baseClass));
+             plusIds.forEach(id => segments[id]?.classList.add(plusClass));
+
+              // Also update the panel details
+             updatePresetDetailsPanel(presetName);
+        }
+
+        // Applies hover highlighting using CSS classes
+        function applyHoverHighlighting(primaryId, relatedIds) {
+             clearSegmentHighlights(); // Clear previous highlights
+             if (!primaryId) return;
+
+             segments[primaryId]?.classList.add('highlight-primary');
+             relatedIds.forEach(id => {
+                if (id !== primaryId) {
+                    segments[id]?.classList.add('highlight-secondary');
+                }
+             });
+             updateSegmentDetailsPanel(primaryId);
+        }
+
+        // Applies locked highlighting using CSS classes
+        function applyLockHighlighting(primaryId, relatedIds) {
+             clearSegmentHighlights(); // Clear previous highlights
+             if (!primaryId) return;
+
+             segments[primaryId]?.classList.add('highlight-locked');
+             relatedIds.forEach(id => {
+                 if (id !== primaryId) {
+                    segments[id]?.classList.add('highlight-locked-secondary');
+                 }
+             });
+            updateSegmentDetailsPanel(primaryId);
+        }
+
+
+        // --- Panel Update Functions ---
+
+        // Helper to create list items for the details panel
+        function createListItem(item) {
+            const li = document.createElement('li');
+            const checkbox = document.createElement('span');
+            checkbox.className = `checkbox ${item.checked ? 'checked' : 'unchecked'}`;
+            li.appendChild(checkbox);
+            const textSpan = document.createElement('span');
+            textSpan.className = 'list-item-text';
+            textSpan.textContent = item.text;
+            textSpan.title = item.text;
+            li.appendChild(textSpan);
+            const iconsContainer = document.createElement('span');
+            iconsContainer.className = 'icons-container';
+
+            if (item.info) {
+                const infoIcon = document.createElement('span'); infoIcon.className = 'icon-info'; infoIcon.textContent = 'i'; infoIcon.title = 'More Info';
+                if (item.infoLink && item.infoLink !== '#') { const link = document.createElement('a'); link.href = item.infoLink; link.target = "_blank"; link.rel = "noopener noreferrer"; link.classList.add('icon-link'); link.appendChild(infoIcon); iconsContainer.appendChild(link);
+                } else { infoIcon.style.cursor = 'default'; infoIcon.style.opacity = '0.5'; iconsContainer.appendChild(infoIcon); }
+            }
+            if (item.download) {
+                const downloadIcon = document.createElement('span'); downloadIcon.className = 'icon-download'; downloadIcon.innerHTML = '&#x21E9;'; downloadIcon.title = 'Download';
+                if (item.downloadPath && item.downloadPath !== '#') { const link = document.createElement('a'); link.href = item.downloadPath; link.download = ""; link.classList.add('icon-link'); link.appendChild(downloadIcon); iconsContainer.appendChild(link);
+                } else { downloadIcon.style.cursor = 'default'; downloadIcon.style.opacity = '0.5'; iconsContainer.appendChild(downloadIcon); }
+            }
+            if (iconsContainer.hasChildNodes()) { li.appendChild(iconsContainer); }
+            return li;
+        }
+
+        // Updates the right-hand panel with SEGMENT details
+        function updateSegmentDetailsPanel(segmentId) {
+            const data = segmentId ? segmentData[segmentId] : null;
+            presetDetailsPanel.style.display = 'none';
+            segmentDetailsPanel.style.display = ''; // Show segment panel
+            if (!data) {
+                detailsTitle.textContent = 'How to use the Digital Wheel'; detailsDescription.textContent = 'Details will appear here.';
+                detailsResourcesUl.innerHTML = ''; detailsPlatformUl.innerHTML = ''; detailsEnquiryUl.innerHTML = ''; detailsProjectUl.innerHTML = '';
+                return;
+            }
+            detailsTitle.textContent = data.title || 'Details'; detailsDescription.textContent = data.description || '';
+            detailsResourcesUl.innerHTML = ''; data.resources?.forEach(item => detailsResourcesUl.appendChild(createListItem(item)));
+            detailsPlatformUl.innerHTML = ''; data.platform?.forEach(item => detailsPlatformUl.appendChild(createListItem(item)));
+            detailsEnquiryUl.innerHTML = ''; data.enquiry?.forEach(item => detailsEnquiryUl.appendChild(createListItem(item)));
+            detailsProjectUl.innerHTML = ''; data.project?.forEach(item => detailsProjectUl.appendChild(createListItem(item)));
+        }
+
+        // Updates the right-hand panel with PRESET details
+        function updatePresetDetailsPanel(presetName) {
+            const data = presetData[presetName];
+             segmentDetailsPanel.style.display = 'none'; // Hide segment panel
+             presetDetailsPanel.style.display = ''; // Show preset panel
+            if (!data) {
+                presetTitle.textContent = ''; presetDescription.textContent = 'Select a preset strategy.'; presetBenefitsUl.innerHTML = ''; presetDownloadsDiv.innerHTML = '';
+                return;
+            }
+            presetTitle.textContent = data.title || 'Preset Details'; presetDescription.textContent = data.description || '';
+            presetBenefitsUl.innerHTML = ''; data.benefits?.forEach(b => { const li = document.createElement('li'); li.innerHTML = `<strong>${b.label}:</strong> ${b.text}`; presetBenefitsUl.appendChild(li); });
+            presetDownloadsDiv.innerHTML = ''; data.downloads?.forEach(d => { const a = document.createElement('a'); a.href = d.href || '#'; a.className = 'icon-link'; a.target = "_blank"; a.rel = "noopener noreferrer"; if (d.href && d.href !=='#') a.download = ""; a.innerHTML = `<span class="${d.iconClass || 'icon-download'}">${d.iconClass === 'icon-info' ? 'i' : '&#x21E9;'}</span> ${d.label}`; presetDownloadsDiv.appendChild(a); });
+        }
+
+        // --- Event Handlers ---
+
+        // Segment Hover & Click
+        function handleMouseOver(event) {
+            // *** Allow hover EVEN IF preset is active, but NOT if segment is locked ***
+            if (lockedSegmentId) return;
+            const primarySegmentId = event.target.id;
+            if (!segments[primarySegmentId]) return;
+
+            const rule = hoverRules[primarySegmentId] || [];
+            applyHoverHighlighting(primarySegmentId, rule); // Apply temporary hover highlight
+        }
+
+        function handleMouseOut(event) {
+            // *** Revert based on state ***
+            if (lockedSegmentId) return; // Do nothing if locked
+
+             // Prevent flicker when moving between segments
+             const relatedTarget = event.relatedTarget;
+             if (relatedTarget && (relatedTarget.classList?.contains('segment') || relatedTarget.closest('.segment'))) {
+                 return;
+             }
+
+            clearSegmentHighlights(); // Clear temporary hover highlights
+
+            if (activePreset) {
+                // If a preset is active, reapply its highlighting
+                applyPresetHighlightingVisuals(activePreset);
+                updatePresetDetailsPanel(activePreset); // Ensure preset panel stays visible
+            } else {
+                // Otherwise, revert to default grey (no classes) and clear panel
+                updateSegmentDetailsPanel(null);
+            }
+        }
+
+        function handleSegmentClick(event) {
+            const clickedSegmentId = event.target.id;
+            if (!segments[clickedSegmentId]) return;
+
+            // --- Clear Preset State ---
+            const currentlyActivePreset = activePreset; // Store before clearing
+            activePreset = null;
+            currentlyExpanded = null;
+            presetsContainer.classList.remove('expanded-essential', 'expanded-smart', 'expanded-advanced');
+            allPresetButtons.forEach(btn => btn.style.outline = 'none');
+            // --- End Clear Preset State ---
+
+            if (lockedSegmentId === clickedSegmentId) {
+                // Unlock
+                lockedSegmentId = null;
+                clearSegmentHighlights(); // Go back to default grey
+                updateSegmentDetailsPanel(null); // Clear panel
+            } else {
+                // Lock
+                lockedSegmentId = clickedSegmentId;
+                const rule = hoverRules[lockedSegmentId] || [];
+                applyLockHighlighting(lockedSegmentId, rule); // Apply lock highlight
+                // Panel updated by applyLockHighlighting
+            }
+        }
+
+       // Preset Button Click Handler
+        function handlePresetClick(event) {
+            const clickedButton = event.currentTarget;
+            const presetName = clickedButton.classList[1]; // e.g., "preset-essential" or "preset-essentialplus"
+            const baseName = presetName.replace('plus', '').split('-')[1]; // 'essential', 'smart', 'advanced'
+            const expansionClass = `expanded-${baseName}`; // e.g., 'expanded-essential'
+
+            // --- Clear Segment Lock ---
+            const wasSegmentLocked = lockedSegmentId; // Store before clearing
+            lockedSegmentId = null;
+            // --- End Clear Segment Lock ---
+
+
+            // If clicking the *same* preset that is already active, deactivate it.
+            if (activePreset === presetName) {
+                activePreset = null;
+                currentlyExpanded = null;
+                presetsContainer.classList.remove(expansionClass); // Collapse
+                clickedButton.style.outline = 'none'; // Remove outline
+                clearSegmentHighlights(); // Clear preset colours from segments
+                 if (wasSegmentLocked) {
+                    updateSegmentDetailsPanel(null); // Clear panel if segment was locked
+                 } else {
+                     // If just deactivating preset, show default segment text
+                     updateSegmentDetailsPanel(null);
+                 }
+
+            } else {
+                 // Activating a new preset (or switching between base/plus in same group)
+
+                 // 1. Set the *new* active preset name
+                 activePreset = presetName;
+
+                 // 2. Handle expansion class
+                 const expandingDifferentGroup = currentlyExpanded !== baseName;
+                 if (expandingDifferentGroup) {
+                     // Collapse other groups if switching
+                    presetsContainer.classList.remove('expanded-essential', 'expanded-smart', 'expanded-advanced');
+                 }
+                 // Add expansion class for the current group (might already be there if switching base/plus)
+                 presetsContainer.classList.add(expansionClass);
+                 currentlyExpanded = baseName; // Track the currently expanded group
+
+                 // 3. Apply highlighting & update panel for the *clicked* preset
+                 applyPresetHighlightingVisuals(presetName); // Handles clearing old & applying new segment colors + panel update
+
+                 // 4. Update button outlines
+                  allPresetButtons.forEach(btn => btn.style.outline = 'none'); // Clear all first
+                  let outlineColor = '';
+                  if (baseName === 'essential') outlineColor = '#4c7c00';
+                  else if (baseName === 'smart') outlineColor = '#cc8400';
+                  else if (baseName === 'advanced') outlineColor = '#4C216D';
+                  clickedButton.style.outline = `2px solid ${outlineColor}`;
+            }
+        }
+
+
+        // --- Add Event Listeners ---
+        allSegmentElements.forEach(segment => {
+            segment.addEventListener('mouseover', handleMouseOver);
+            segment.addEventListener('mouseout', handleMouseOut);
+            segment.addEventListener('click', handleSegmentClick);
+        });
+
+        allPresetButtons.forEach(btn => {
+            btn.addEventListener('click', handlePresetClick);
+        });
+
+
+        // --- Initial State ---
+        updateSegmentDetailsPanel(null); // Show default segment panel text on load
+        clearSegmentHighlights(); // Ensure segments are default color on load
+
+    </script>
+</body>
+</html>
